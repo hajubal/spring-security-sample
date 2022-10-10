@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 //@Import(SecurityConfigV3.class)
-//@Import(SecurityConfigV2.class)
+@Import(SecurityConfigV2.class)
 //@Import(SecurityConfigV1.class)
 @EnableWebSecurity
 public class SecurityConfig {
