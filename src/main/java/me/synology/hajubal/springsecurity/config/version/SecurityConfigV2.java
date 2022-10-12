@@ -34,7 +34,7 @@ public class SecurityConfigV2 {
                          */
                         .loginPage("/loginPage")
                         .defaultSuccessUrl("/")
-                        .failureUrl("/login")
+                        .failureUrl("/loginPage")
                         .usernameParameter("userId")
                         .passwordParameter("passwd")
                         .successHandler((request, response, authentication) -> {
@@ -43,7 +43,7 @@ public class SecurityConfigV2 {
                         })
                         .failureHandler((request, response, exception) -> {
                             System.out.println("exception: " + exception.getMessage());
-                            response.sendRedirect("/login");
+                            response.sendRedirect("/loginPage");
                         })
                         .permitAll()
                 .and()
