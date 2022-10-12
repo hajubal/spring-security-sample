@@ -15,4 +15,19 @@ public class SecurityController {
     public String user() {
         return "user";
     }
+
+    @GetMapping("/sys")
+    public String sys() {
+        return "sys";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
+    @GetMapping("/denied")
+    public String denied() {
+        return "denied";
+    }
 }

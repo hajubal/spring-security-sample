@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 public class SecurityConfigV4 {
 
@@ -47,9 +50,26 @@ public class SecurityConfigV4 {
         return http
                 .authorizeRequests()
                 .antMatchers("/user").hasRole("USER")
+                .antMatchers("/sys").hasAnyRole("SYS", "ADMIN")
+                .antMatchers("/admin").access("hasRole('ADMIN')")
                 .and()
                     .formLogin()
-                    .permitAll()
+                        .loginPage("/loginPage")
+                        .successHandler((request, response, authentication) -> {
+                            RequestCache requestCache = new HttpSessionRequestCache();
+                            SavedRequest savedRequest = requestCache.getRequest(request, response);
+                            String redirectUrl = savedRequest.getRedirectUrl();
+                            response.sendRedirect(redirectUrl);
+                        })
+                        .permitAll()
+                .and()
+                    .exceptionHandling()
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/loginPage");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/denied");
+                        })
                 .and()
                 .build();
     }
