@@ -48,6 +48,7 @@ public class SecurityConfigV4 {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/sys").hasAnyRole("SYS", "ADMIN")
@@ -55,6 +56,9 @@ public class SecurityConfigV4 {
                 .and()
                     .formLogin()
                         .loginPage("/loginPage")
+                        .usernameParameter("userId")
+                        .passwordParameter("passwd")
+                        .loginProcessingUrl("/login")
                         .successHandler((request, response, authentication) -> {
                             RequestCache requestCache = new HttpSessionRequestCache();
                             SavedRequest savedRequest = requestCache.getRequest(request, response);

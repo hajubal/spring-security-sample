@@ -1,5 +1,6 @@
 package me.synology.hajubal.springsecurity.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,5 +30,10 @@ public class SecurityController {
     @GetMapping("/denied")
     public String denied() {
         return "denied";
+    }
+
+    @GetMapping("/info")
+    public String info() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

@@ -24,15 +24,15 @@ public class SecurityConfigV2 {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-                .authorizeRequests()
-                    .anyRequest().authenticated()
-                .and().csrf().disable()
+                .csrf().disable()
                     .formLogin()
                         /*
-                         * login page를 지정하면 spring에서 기본으로 제공되는 페이지와 동일한 url 이라도 default page는 작동하지 않음.
-                         * login page를 작성하지 않고 page를 설정하면 404에러가 발생
+                         * loginPage를 지정하면 spring에서 기본으로 제공되는 페이지와 동일한 url 이라도 default page는 작동하지 않음.
+                         * login page html을 작성하지 않고 loginPage 설정하면 404에러가 발생
+                         * loginProcessingUrl도 지정하지 않으면 기본 /login servlet이 동작하지 않는다.
                          */
                         .loginPage("/loginPage")
+                        .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")
                         .failureUrl("/loginPage")
                         .usernameParameter("userId")
@@ -46,6 +46,7 @@ public class SecurityConfigV2 {
                             response.sendRedirect("/loginPage");
                         })
                         .permitAll()
+
                 .and()
                     .logout()
                         .logoutUrl("/logout")
@@ -55,7 +56,10 @@ public class SecurityConfigV2 {
 
                             }
                         })
-                    .and()
+                .and()
+                    .authorizeRequests()
+                    .anyRequest().authenticated()
+                .and()
                 .build();
     }
 }

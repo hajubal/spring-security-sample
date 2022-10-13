@@ -27,8 +27,10 @@ public class SecurityConfigV3 {
                 .authorizeRequests()
                     .anyRequest().authenticated()
                 .and()
+                /**
+                 * formLogin() 까지만 설정하면 다른 옵션들은 기본 옵션이 적용됨
+                 */
                     .formLogin()
-                    .permitAll()
                 .and()
                 .rememberMe()
                     .rememberMeCookieName("remember")
