@@ -1,5 +1,6 @@
 package me.synology.hajubal.springsecurity.config.version;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +13,7 @@ public class SecurityConfigV5 {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 // Spring Security should completely ignore URLs starting with /resources/
-                .antMatchers("/resources/**")
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 ;
     }
 
