@@ -34,10 +34,8 @@ public class SecurityConfigV5 {
     public SecurityFilterChain configure2(HttpSecurity http) throws Exception {
         return http
                 .antMatcher("/admin")
-                .antMatcher("/sys")
                 .authorizeRequests()
                 .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/sys").hasRole("SYS")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
@@ -46,6 +44,20 @@ public class SecurityConfigV5 {
     }
 
     @Order(3)
+    @Bean
+    public SecurityFilterChain configure3(HttpSecurity http) throws Exception {
+        return http
+                .antMatcher("/sys")
+                .authorizeRequests()
+                .antMatchers("/sys").hasRole("SYS")
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic()
+                .and()
+                .build();
+    }
+
+    @Order(99)
     @Bean
     public SecurityFilterChain configure0(HttpSecurity http) throws Exception {
         return http
