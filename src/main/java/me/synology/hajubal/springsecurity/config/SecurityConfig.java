@@ -10,10 +10,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-@Import(SecurityConfigV5.class)
+//@Import(SecurityConfigV5.class)
 //@Import(SecurityConfigV4.class)
 //@Import(SecurityConfigV3.class)
-//@Import(SecurityConfigV2.class)
+@Import(SecurityConfigV2.class)
 //@Import(SecurityConfigV1.class)
 @EnableWebSecurity
 public class SecurityConfig {

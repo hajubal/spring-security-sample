@@ -1,9 +1,16 @@
 package me.synology.hajubal.springsecurity.config.version;
 
+import me.synology.hajubal.springsecurity.config.common.FormAuthenticationDetailsSource;
+import me.synology.hajubal.springsecurity.config.common.FormWebAuthenticationDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
@@ -13,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class SecurityConfigV2 {
+
+    @Autowired
+    private FormAuthenticationDetailsSource formAuthenticationDetailsSource;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -37,6 +47,7 @@ public class SecurityConfigV2 {
                         .failureUrl("/loginPage")
                         .usernameParameter("userId")
                         .passwordParameter("passwd")
+                        .authenticationDetailsSource(this.formAuthenticationDetailsSource)
                         .successHandler((request, response, authentication) -> {
                             System.out.println("authentication: " + authentication.getName());
                             response.sendRedirect("/");
@@ -46,8 +57,28 @@ public class SecurityConfigV2 {
                             response.sendRedirect("/loginPage");
                         })
                         .permitAll()
+                        .and()
+                        .authenticationManager(new ProviderManager(new AuthenticationProvider() {
+                            @Override
+                            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                                System.out.println("authentication = " + authentication);
 
-                .and()
+                                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), null, null);
+
+                                FormWebAuthenticationDetails details = (FormWebAuthenticationDetails) authentication.getDetails();
+
+                                String secretKey = details.getSecretKey();
+
+                                System.out.println("secretKey = " + secretKey);
+
+                                return token;
+                            }
+
+                            @Override
+                            public boolean supports(Class<?> authentication) {
+                                return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+                            }
+                        }))
                     .logout()
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(new LogoutSuccessHandler() {

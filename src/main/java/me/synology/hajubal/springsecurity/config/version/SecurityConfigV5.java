@@ -30,42 +30,40 @@ public class SecurityConfigV5 {
                 .build();
     }
 
-    @Order(2)
-    @Bean
-    public SecurityFilterChain configure2(HttpSecurity http) throws Exception {
-        return http
-                .antMatcher("/admin")
-                .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .build();
-    }
+//    @Order(2)
+//    @Bean
+//    public SecurityFilterChain configure2(HttpSecurity http) throws Exception {
+//        return http
+//                .antMatcher("/admin")
+//                .authorizeRequests()
+//                .antMatchers("/admin").hasRole("ADMIN")
+//                .anyRequest().authenticated()
+//                .and()
+//                .httpBasic()
+//                .and()
+//                .build();
+//    }
 
-    @Order(3)
-    @Bean
-    public SecurityFilterChain configure3(HttpSecurity http) throws Exception {
-        return http
-                .antMatcher("/sys")
-                .authorizeRequests()
-                .antMatchers("/sys").hasRole("SYS")
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .build();
-    }
+//    @Order(3)
+//    @Bean
+//    public SecurityFilterChain configure3(HttpSecurity http) throws Exception {
+//        return http
+//                .antMatcher("/sys")
+//                .authorizeRequests()
+//                .antMatchers("/sys").hasRole("SYS")
+//                .anyRequest().authenticated()
+//                .and()
+//                .httpBasic()
+//                .and()
+//                .build();
+//    }
 
-    @Order(99)
-    @Bean
-    public SecurityFilterChain configure0(HttpSecurity http) throws Exception {
-        return http
-                .formLogin()
-                .and()
-                .logout()
-                .and()
-                .build();
-    }
+//    @Order(0)
+//    @Bean
+//    public SecurityFilterChain configure0(HttpSecurity http) throws Exception {
+//        return http
+//                .formLogin()
+//                .and()
+//                .build();
+//    }
 }

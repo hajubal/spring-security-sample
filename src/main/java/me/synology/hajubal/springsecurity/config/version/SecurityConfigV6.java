@@ -1,5 +1,7 @@
 package me.synology.hajubal.springsecurity.config.version;
 
+import me.synology.hajubal.springsecurity.config.common.FormAuthenticationDetailsSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
@@ -13,6 +15,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 
 public class SecurityConfigV6 {
+
+    @Autowired
+    private FormAuthenticationDetailsSource formAuthenticationDetailsSource;
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -83,7 +89,7 @@ public class SecurityConfigV6 {
 
                     @Override
                     public boolean supports(Class<?> authentication) {
-                        return true;
+                        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
                     }
                 }))
 /*
