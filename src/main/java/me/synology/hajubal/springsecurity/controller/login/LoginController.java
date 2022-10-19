@@ -1,8 +1,8 @@
 package me.synology.hajubal.springsecurity.controller.login;
 
 
-import io.security.corespringsecurity.domain.entity.Account;
-import io.security.corespringsecurity.security.token.AjaxAuthenticationToken;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.security.token.AjaxAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

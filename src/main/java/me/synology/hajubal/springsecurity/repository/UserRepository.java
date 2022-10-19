@@ -1,6 +1,6 @@
 package me.synology.hajubal.springsecurity.repository;
 
-import io.security.corespringsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<Account, Long> {

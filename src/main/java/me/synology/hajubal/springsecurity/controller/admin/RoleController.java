@@ -1,9 +1,9 @@
 package me.synology.hajubal.springsecurity.controller.admin;
 
-import io.security.corespringsecurity.domain.dto.RoleDto;
-import io.security.corespringsecurity.domain.entity.Resources;
-import io.security.corespringsecurity.domain.entity.Role;
-import io.security.corespringsecurity.service.RoleService;
+import me.synology.hajubal.springsecurity.domain.dto.RoleDto;
+import me.synology.hajubal.springsecurity.domain.entity.Resources;
+import me.synology.hajubal.springsecurity.domain.entity.Role;
+import me.synology.hajubal.springsecurity.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

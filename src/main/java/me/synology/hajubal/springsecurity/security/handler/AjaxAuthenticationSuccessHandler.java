@@ -1,7 +1,7 @@
 package me.synology.hajubal.springsecurity.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.security.corespringsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

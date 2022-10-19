@@ -1,7 +1,7 @@
 package me.synology.hajubal.springsecurity.service;
 
-import io.security.corespringsecurity.domain.dto.AccountDto;
-import io.security.corespringsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.domain.dto.AccountDto;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
 
 import java.util.List;
 

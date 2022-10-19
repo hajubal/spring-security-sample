@@ -1,7 +1,7 @@
 package me.synology.hajubal.springsecurity.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.security.corespringsecurity.util.WebUtil;
+import me.synology.hajubal.springsecurity.util.WebUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

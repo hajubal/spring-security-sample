@@ -1,8 +1,8 @@
 package me.synology.hajubal.springsecurity.service.impl;
 
-import io.security.corespringsecurity.domain.entity.Role;
-import io.security.corespringsecurity.repository.RoleRepository;
-import io.security.corespringsecurity.service.RoleService;
+import me.synology.hajubal.springsecurity.domain.entity.Role;
+import me.synology.hajubal.springsecurity.repository.RoleRepository;
+import me.synology.hajubal.springsecurity.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

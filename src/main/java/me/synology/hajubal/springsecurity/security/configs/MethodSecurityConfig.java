@@ -1,6 +1,6 @@
-package me.synology.hajubal.springsecurity.security.configs;//package io.security.corespringsecurity.security.configs;
+package me.synology.hajubal.springsecurity.security.configs;//package me.synology.hajubal.springsecurity.security.configs;
 //
-//import io.security.corespringsecurity.security.metadatasource.UrlSecurityMetadataSource;
+//import me.synology.hajubal.springsecurity.security.metadatasource.UrlSecurityMetadataSource;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

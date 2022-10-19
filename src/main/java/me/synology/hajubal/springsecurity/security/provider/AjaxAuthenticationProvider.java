@@ -1,7 +1,5 @@
 package me.synology.hajubal.springsecurity.security.provider;
 
-import io.security.corespringsecurity.security.service.AccountContext;
-import io.security.corespringsecurity.security.token.AjaxAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.springsecurity.security.service.AccountContext;
 import me.synology.hajubal.springsecurity.security.token.AjaxAuthenticationToken;

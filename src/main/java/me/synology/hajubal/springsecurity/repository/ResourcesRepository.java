@@ -1,6 +1,6 @@
 package me.synology.hajubal.springsecurity.repository;
 
-import io.security.corespringsecurity.domain.entity.Resources;
+import me.synology.hajubal.springsecurity.domain.entity.Resources;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

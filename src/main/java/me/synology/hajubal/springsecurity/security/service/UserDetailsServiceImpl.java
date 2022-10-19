@@ -1,7 +1,7 @@
 package me.synology.hajubal.springsecurity.security.service;
 
-import io.security.corespringsecurity.domain.entity.Account;
-import io.security.corespringsecurity.repository.UserRepository;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

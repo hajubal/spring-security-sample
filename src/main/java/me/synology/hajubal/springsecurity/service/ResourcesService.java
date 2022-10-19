@@ -1,6 +1,6 @@
 package me.synology.hajubal.springsecurity.service;
 
-import io.security.corespringsecurity.domain.entity.Resources;
+import me.synology.hajubal.springsecurity.domain.entity.Resources;
 
 import java.util.List;
 

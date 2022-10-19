@@ -1,11 +1,13 @@
 package me.synology.hajubal.springsecurity.security.listener;
 
-import io.security.corespringsecurity.domain.entity.Account;
-import io.security.corespringsecurity.domain.entity.Resources;
-import io.security.corespringsecurity.domain.entity.Role;
-import io.security.corespringsecurity.repository.ResourcesRepository;
-import io.security.corespringsecurity.repository.RoleRepository;
-import io.security.corespringsecurity.repository.UserRepository;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.domain.entity.Resources;
+import me.synology.hajubal.springsecurity.domain.entity.Account;
+import me.synology.hajubal.springsecurity.domain.entity.Resources;
+import me.synology.hajubal.springsecurity.domain.entity.Role;
+import me.synology.hajubal.springsecurity.repository.ResourcesRepository;
+import me.synology.hajubal.springsecurity.repository.RoleRepository;
+import me.synology.hajubal.springsecurity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -62,9 +64,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 //
 //        Role managerRole = createRoleIfNotFound("ROLE_MANAGER", "매니저");
 //        roles1.add(managerRole);
-//        createResourceIfNotFound("io.security.corespringsecurity.aopsecurity.method.AopMethodService.methodTest", "", roles1, "method");
-//        createResourceIfNotFound("io.security.corespringsecurity.aopsecurity.method.AopMethodService.innerCallMethodTest", "", roles1, "method");
-//        createResourceIfNotFound("execution(* io.security.corespringsecurity.aopsecurity.pointcut.*Service.*(..))", "", roles1, "pointcut");
+//        createResourceIfNotFound("me.synology.hajubal.springsecurity.aopsecurity.method.AopMethodService.methodTest", "", roles1, "method");
+//        createResourceIfNotFound("me.synology.hajubal.springsecurity.aopsecurity.method.AopMethodService.innerCallMethodTest", "", roles1, "method");
+//        createResourceIfNotFound("execution(* me.synology.hajubal.springsecurity.aopsecurity.pointcut.*Service.*(..))", "", roles1, "pointcut");
 //        createUserIfNotFound("manager", "pass", "manager@gmail.com", 20, roles1);
 //
 //        Set<Role> roles3 = new HashSet<>();

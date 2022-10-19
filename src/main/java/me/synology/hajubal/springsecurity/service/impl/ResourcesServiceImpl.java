@@ -1,9 +1,9 @@
 package me.synology.hajubal.springsecurity.service.impl;
 
-import io.security.corespringsecurity.domain.entity.Resources;
-import io.security.corespringsecurity.repository.ResourcesRepository;
-import io.security.corespringsecurity.service.ResourcesService;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.springsecurity.domain.entity.Resources;
+import me.synology.hajubal.springsecurity.repository.ResourcesRepository;
+import me.synology.hajubal.springsecurity.service.ResourcesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,25 +16,25 @@ import java.util.List;
 public class ResourcesServiceImpl implements ResourcesService {
 
     @Autowired
-    private ResourcesRepository ResourcesRepository;
+    private ResourcesRepository resourcesRepository;
 
     @Transactional
     public Resources getResources(long id) {
-        return ResourcesRepository.findById(id).orElse(new Resources());
+        return resourcesRepository.findById(id).orElse(new Resources());
     }
 
     @Transactional
     public List<Resources> getResources() {
-        return ResourcesRepository.findAll(Sort.by(Sort.Order.asc("orderNum")));
+        return resourcesRepository.findAll(Sort.by(Sort.Order.asc("orderNum")));
     }
 
     @Transactional
     public void createResources(Resources resources){
-        ResourcesRepository.save(resources);
+        resourcesRepository.save(resources);
     }
 
     @Transactional
     public void deleteResources(long id) {
-        ResourcesRepository.deleteById(id);
+        resourcesRepository.deleteById(id);
     }
 }

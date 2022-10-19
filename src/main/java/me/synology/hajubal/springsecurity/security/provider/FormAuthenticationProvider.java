@@ -1,7 +1,7 @@
 package me.synology.hajubal.springsecurity.security.provider;
 
-import io.security.corespringsecurity.security.common.FormWebAuthenticationDetails;
-import io.security.corespringsecurity.security.service.AccountContext;
+import me.synology.hajubal.springsecurity.security.common.FormWebAuthenticationDetails;
+import me.synology.hajubal.springsecurity.security.service.AccountContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

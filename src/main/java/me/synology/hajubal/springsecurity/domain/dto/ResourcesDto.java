@@ -1,6 +1,6 @@
 package me.synology.hajubal.springsecurity.domain.dto;
 
-import io.security.corespringsecurity.domain.entity.Role;
+import me.synology.hajubal.springsecurity.domain.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
