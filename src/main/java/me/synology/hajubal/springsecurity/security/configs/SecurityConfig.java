@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.vote.AffirmativeBased;
@@ -54,11 +55,15 @@ public class SecurityConfig {
                 ;
     }
 
+    @Order(0)
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
+                .headers().frameOptions().sameOrigin()
+                .and()
                 .authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/mypage").hasRole("USER")
                 .antMatchers("/messages").hasRole("MANAGER")
                 .antMatchers("/config").hasRole("ADMIN")
@@ -81,12 +86,10 @@ public class SecurityConfig {
 //        .and()
 //                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .and()
-
-
-
                 .build();
     }
 
+    @Order(1)
     @Bean
     public SecurityFilterChain customConfigurer(HttpSecurity http) throws Exception {
         return http

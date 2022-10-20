@@ -3,6 +3,7 @@ package me.synology.hajubal.springsecurity.security.service;
 import me.synology.hajubal.springsecurity.domain.entity.Account;
 import me.synology.hajubal.springsecurity.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Transactional(readOnly = true)
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -35,6 +38,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UsernameNotFoundException("No user found with username: " + username);
             }
         }
+
+        //Hibernate.initialize(account.getUserRoles());
+
         List<GrantedAuthority> collect = account.getUserRoles()
                 .stream()
                 .map(userRole -> userRole.getRoleName())
