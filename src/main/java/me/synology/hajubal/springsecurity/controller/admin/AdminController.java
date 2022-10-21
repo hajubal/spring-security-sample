@@ -11,5 +11,4 @@ public class AdminController {
     public String home() throws Exception {
         return "admin/home";
     }
-
 }

@@ -1,13 +1,19 @@
 package me.synology.hajubal.springsecurity.security.service;
 
-import lombok.Data;
+import lombok.*;
 import me.synology.hajubal.springsecurity.domain.entity.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
 
-@Data
+
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@Value
 public class AccountContext extends User {
   private Account account;
 
