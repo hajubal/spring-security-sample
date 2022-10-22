@@ -2,6 +2,7 @@ package me.synology.hajubal.springsecurity.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.springsecurity.security.common.FormWebAuthenticationDetailsSource;
+import me.synology.hajubal.springsecurity.security.filter.PermitAllFilter;
 import me.synology.hajubal.springsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import me.synology.hajubal.springsecurity.security.handler.AjaxAuthenticationSuccessHandler;
 import me.synology.hajubal.springsecurity.security.handler.FormAccessDeniedHandler;
@@ -47,6 +48,11 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationFailureHandler formAuthenticationFailureHandler;
 
+    @Autowired
+    private PermitAllFilter permitAllFilter;
+
+    private String[] permitAllPattern = {"/", "/home", "/users", "/login"};
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
@@ -62,28 +68,28 @@ public class SecurityConfig {
                 .csrf().disable()
                 .headers().frameOptions().sameOrigin()
                 .and()
-                .authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/mypage").hasRole("USER")
-                .antMatchers("/messages").hasRole("MANAGER")
-                .antMatchers("/config").hasRole("ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated()
+                    .authorizeRequests()
+                    .antMatchers("/h2-console/**").permitAll()
+                    .antMatchers("/mypage").hasRole("USER")
+                    .antMatchers("/messages").hasRole("MANAGER")
+                    .antMatchers("/config").hasRole("ADMIN")
+                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/**").permitAll()
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/login_proc")
-                .authenticationDetailsSource(formWebAuthenticationDetailsSource)
-                .successHandler(formAuthenticationSuccessHandler)
-                .failureHandler(formAuthenticationFailureHandler)
-                .permitAll()
-        .and()
-                .exceptionHandling()
-//                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-                .accessDeniedPage("/denied")
-                .accessDeniedHandler(accessDeniedHandler())
+                    .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login_proc")
+                    .authenticationDetailsSource(formWebAuthenticationDetailsSource)
+                    .successHandler(formAuthenticationSuccessHandler)
+                    .failureHandler(formAuthenticationFailureHandler)
+                    .permitAll()
+                .and()
+                    .exceptionHandling()
+    //                .authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
+                    .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                    .accessDeniedPage("/denied")
+                    .accessDeniedHandler(accessDeniedHandler())
 //        .and()
 //                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .and()
@@ -133,6 +139,14 @@ public class SecurityConfig {
         FormAccessDeniedHandler commonAccessDeniedHandler = new FormAccessDeniedHandler();
         commonAccessDeniedHandler.setErrorPage("/denied");
         return commonAccessDeniedHandler;
+    }
+
+    @Bean
+    public PermitAllFilter permitAllFilter() {
+        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllPattern);
+        permitAllFilter.setAccessDecisionManager(affirmativeBased());
+        permitAllFilter.setSecurityMetadataSource(urlSecurityMetadataSource());
+        return permitAllFilter;
     }
 
 //    @Bean
