@@ -2,13 +2,16 @@ package me.synology.hajubal.springsecurity.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.springsecurity.security.common.FormWebAuthenticationDetailsSource;
+import me.synology.hajubal.springsecurity.security.factory.UrlResourcesMapFactoryBean;
 import me.synology.hajubal.springsecurity.security.filter.PermitAllFilter;
 import me.synology.hajubal.springsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import me.synology.hajubal.springsecurity.security.handler.AjaxAuthenticationSuccessHandler;
 import me.synology.hajubal.springsecurity.security.handler.FormAccessDeniedHandler;
 import me.synology.hajubal.springsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadatsSource;
+import me.synology.hajubal.springsecurity.security.metadatasource.UrlSecurityMetadataSource;
 import me.synology.hajubal.springsecurity.security.provider.AjaxAuthenticationProvider;
 import me.synology.hajubal.springsecurity.security.provider.FormAuthenticationProvider;
+import me.synology.hajubal.springsecurity.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -47,6 +50,9 @@ public class SecurityConfig {
     private AuthenticationSuccessHandler formAuthenticationSuccessHandler;
     @Autowired
     private AuthenticationFailureHandler formAuthenticationFailureHandler;
+
+    @Autowired
+    private SecurityResourceService securityResourceService;
 
     @Autowired
     private PermitAllFilter permitAllFilter;
@@ -147,6 +153,18 @@ public class SecurityConfig {
         permitAllFilter.setAccessDecisionManager(affirmativeBased());
         permitAllFilter.setSecurityMetadataSource(urlSecurityMetadataSource());
         return permitAllFilter;
+    }
+
+    @Bean
+    public UrlSecurityMetadataSource urlSecurityMetadataSource() {
+        return new UrlSecurityMetadataSource(urlResourcesMapFactoryBean().getObject(), securityResourceService);
+    }
+
+    @Bean
+    public UrlResourcesMapFactoryBean urlResourcesMapFactoryBean(){
+        UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean();
+        urlResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
+        return urlResourcesMapFactoryBean;
     }
 
 //    @Bean
