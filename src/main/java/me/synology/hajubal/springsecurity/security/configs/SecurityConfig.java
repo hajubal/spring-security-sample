@@ -1,6 +1,8 @@
 package me.synology.hajubal.springsecurity.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.springsecurity.repository.AccessIpRepository;
+import me.synology.hajubal.springsecurity.repository.ResourcesRepository;
 import me.synology.hajubal.springsecurity.security.common.FormWebAuthenticationDetailsSource;
 import me.synology.hajubal.springsecurity.security.factory.UrlResourcesMapFactoryBean;
 import me.synology.hajubal.springsecurity.security.filter.PermitAllFilter;
@@ -11,6 +13,7 @@ import me.synology.hajubal.springsecurity.security.metadatasource.UrlFilterInvoc
 import me.synology.hajubal.springsecurity.security.metadatasource.UrlSecurityMetadataSource;
 import me.synology.hajubal.springsecurity.security.provider.AjaxAuthenticationProvider;
 import me.synology.hajubal.springsecurity.security.provider.FormAuthenticationProvider;
+import me.synology.hajubal.springsecurity.service.RoleHierarchyService;
 import me.synology.hajubal.springsecurity.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -19,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -99,6 +103,7 @@ public class SecurityConfig {
 //        .and()
 //                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .and()
+                    .addFilterAt(permitAllFilter, FilterSecurityInterceptor.class)
                 .build();
     }
 
@@ -191,5 +196,9 @@ public class SecurityConfig {
         return new UrlFilterInvocationSecurityMetadatsSource();
     }
 
-
+    @Bean
+    public SecurityResourceService securityResourceService(ResourcesRepository resourcesRepository, RoleHierarchyImpl roleHierarchy, RoleHierarchyService roleHierarchyService, AccessIpRepository accessIpRepository) {
+        SecurityResourceService SecurityResourceService = new SecurityResourceService(resourcesRepository, roleHierarchy, roleHierarchyService, accessIpRepository);
+        return SecurityResourceService;
+    }
 }
