@@ -1,6 +1,7 @@
 package me.synology.hajubal.springsecurity.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.springsecurity.domain.dto.AccountDto;
 import me.synology.hajubal.springsecurity.security.token.AjaxAuthenticationToken;
 import me.synology.hajubal.springsecurity.util.WebUtil;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
@@ -30,6 +32,8 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
+
+        log.info("Call AjaxLoginProcessingFilter.attemptAuthentication");
 
         if (!HttpMethod.POST.name().equals(request.getMethod()) || !WebUtil.isAjax(request)) {
             throw new IllegalArgumentException("Authentication method not supported");

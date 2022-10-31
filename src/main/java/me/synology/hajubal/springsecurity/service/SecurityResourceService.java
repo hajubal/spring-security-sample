@@ -1,5 +1,6 @@
 package me.synology.hajubal.springsecurity.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.springsecurity.domain.entity.Resources;
 import me.synology.hajubal.springsecurity.repository.AccessIpRepository;
@@ -9,26 +10,29 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Service
 @Slf4j
 public class SecurityResourceService {
 
-    private ResourcesRepository resourcesRepository;
-    private RoleHierarchyImpl roleHierarchy;
-    private RoleHierarchyService roleHierarchyService;
-    private AccessIpRepository accessIpRepository;
-
-    public SecurityResourceService(ResourcesRepository resourcesRepository, RoleHierarchyImpl roleHierarchy, RoleHierarchyService roleHierarchyService, AccessIpRepository accessIpRepository) {
-        this.resourcesRepository = resourcesRepository;
-        this.roleHierarchy = roleHierarchy;
-        this.roleHierarchyService = roleHierarchyService;
-        this.accessIpRepository = accessIpRepository;
-    }
+    private final ResourcesRepository resourcesRepository;
+    private final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+    private final RoleHierarchyService roleHierarchyService;
+    private final AccessIpRepository accessIpRepository;
+//
+//    public SecurityResourceService(ResourcesRepository resourcesRepository, RoleHierarchyImpl roleHierarchy, RoleHierarchyService roleHierarchyService, AccessIpRepository accessIpRepository) {
+//        this.resourcesRepository = resourcesRepository;
+//        this.roleHierarchy = roleHierarchy;
+//        this.roleHierarchyService = roleHierarchyService;
+//        this.accessIpRepository = accessIpRepository;
+//    }
 
     public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getResourceList() {
 
