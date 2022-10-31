@@ -1,6 +1,7 @@
 package me.synology.hajubal.springsecurity.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.synology.hajubal.springsecurity.domain.dto.AccountDto;
 import me.synology.hajubal.springsecurity.domain.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        Account account = (Account) authentication.getPrincipal();
+        AccountDto account = (AccountDto) authentication.getPrincipal();
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

@@ -1,13 +1,10 @@
 package me.synology.hajubal.springsecurity.security.configs;
 
 import lombok.extern.slf4j.Slf4j;
-import me.synology.hajubal.springsecurity.repository.AccessIpRepository;
-import me.synology.hajubal.springsecurity.repository.ResourcesRepository;
 import me.synology.hajubal.springsecurity.security.common.FormWebAuthenticationDetailsSource;
 import me.synology.hajubal.springsecurity.security.factory.UrlResourcesMapFactoryBean;
 import me.synology.hajubal.springsecurity.security.filter.AjaxLoginProcessingFilter;
 import me.synology.hajubal.springsecurity.security.filter.PermitAllFilter;
-import me.synology.hajubal.springsecurity.security.filter.TestFilter;
 import me.synology.hajubal.springsecurity.security.handler.AjaxAuthenticationFailureHandler;
 import me.synology.hajubal.springsecurity.security.handler.AjaxAuthenticationSuccessHandler;
 import me.synology.hajubal.springsecurity.security.handler.FormAccessDeniedHandler;
@@ -15,7 +12,6 @@ import me.synology.hajubal.springsecurity.security.metadatasource.UrlFilterInvoc
 import me.synology.hajubal.springsecurity.security.metadatasource.UrlSecurityMetadataSource;
 import me.synology.hajubal.springsecurity.security.provider.AjaxAuthenticationProvider;
 import me.synology.hajubal.springsecurity.security.provider.FormAuthenticationProvider;
-import me.synology.hajubal.springsecurity.service.RoleHierarchyService;
 import me.synology.hajubal.springsecurity.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -24,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,11 +34,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,9 +61,6 @@ public class SecurityConfig {
     @Autowired
     private SecurityResourceService securityResourceService;
 
-//    @Autowired
-//    private PermitAllFilter permitAllFilter;
-
     private String[] permitAllPattern = {"/", "/home", "/users", "/login"};
 
     @Bean
@@ -79,7 +71,7 @@ public class SecurityConfig {
                 ;
     }
 
-    @Order(0)
+    @Order(1)
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
@@ -111,45 +103,69 @@ public class SecurityConfig {
 //        .and()
 //                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
                 .and()
-//                    .authenticationManager(authenticationManager)
-//                    .addFilterAt(permitAllFilter(), FilterSecurityInterceptor.class)
-//                    .addFilterBefore(ajaxLoginProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-//                    .authenticationProvider(ajaxAuthenticationProvider())
                 .build();
     }
 
-//    @Order(1)
+
+    /**
+     * Custom Configurer 사용으로 ajax login 구현
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
+//    @Order(0)
 //    @Bean
     public SecurityFilterChain customConfigurer(HttpSecurity http) throws Exception {
         return http
+                .csrf().disable()
+                .antMatcher("/ajaxLogin")
                 .apply(new AjaxLoginConfigurer<>())
-                .successHandlerAjax(ajaxAuthenticationSuccessHandler())
-                .failureHandlerAjax(ajaxAuthenticationFailureHandler())
-//                .loginProcessingUrl("/ajaxLogin")
+                    .successHandlerAjax(ajaxAuthenticationSuccessHandler())
+                    .failureHandlerAjax(ajaxAuthenticationFailureHandler())
                 .and()
-                .authenticationProvider(authenticationProvider())
-                .authenticationProvider(ajaxAuthenticationProvider())
-                .addFilterBefore(new AjaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .authenticationProvider(authenticationProvider())
+                    .authenticationProvider(ajaxAuthenticationProvider())
                 .build();
     }
 
-//    @Order(2)
-//    @Bean
+    /**
+     * 그냥 filter로 구현
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
+    @Order(0)
+    @Bean
     public SecurityFilterChain ajaxFilterChain(HttpSecurity http) throws Exception {
 
+        /**
+         * AuthenticationManager
+         */
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
         builder.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
 
         AuthenticationManager authenticationManager = builder.build();
 
-        AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManager);
+        AjaxLoginProcessingFilter authFilter = new AjaxLoginProcessingFilter();
+        authFilter.setAuthenticationManager(authenticationManager);
+        authFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
 
         return http
+                .csrf().disable()
+                .antMatcher("/ajaxLogin")
                 .authenticationManager(authenticationManager)
-                .addFilterBefore(ajaxLoginProcessingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(ajaxAuthenticationProvider())
+                    .sessionManagement()
+                    .sessionFixation()
+                    .changeSessionId()
+                .and()
+                .formLogin()
+                    .loginPage("/login")
+                .and()
                 .build();
     }
 
