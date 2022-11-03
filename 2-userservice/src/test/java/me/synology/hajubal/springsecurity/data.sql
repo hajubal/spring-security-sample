@@ -1,0 +1,1 @@
+--insert into users (username, password, age) values ('user', '{bcrypt}$2a$10$Emhes1Cb2LqzDy7tpibOoeQyLPK12EIFaCbA9YqxAt.8JA1zVdHg6', 20);
