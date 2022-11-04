@@ -31,8 +31,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
+                .csrf().disable()
+                    .headers().frameOptions().sameOrigin()
+                .and()
                 .authorizeRequests(auth -> {
                     auth
+                            .antMatchers("/h2-console/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .formLogin()

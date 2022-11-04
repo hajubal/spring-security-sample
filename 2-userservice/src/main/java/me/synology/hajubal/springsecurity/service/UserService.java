@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,6 +28,7 @@ public class UserService implements UserDetailsService {
         UserDetails userDetails = User.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
+                .authorities("USER")
                 .build();
 
         log.debug("User: {}", userDetails);

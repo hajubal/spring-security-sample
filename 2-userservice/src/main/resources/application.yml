@@ -4,6 +4,7 @@ logging:
       springframework:
         security: TRACE
         web: DEBUG
+    me.synology.hajubal: DEBUG
 spring:
   datasource:
     url: jdbc:h2:mem:userservice;MODE=MySQL
@@ -20,4 +21,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57Dialect
         format_sql: true
-    show-sql: true
+        show-sql: true
