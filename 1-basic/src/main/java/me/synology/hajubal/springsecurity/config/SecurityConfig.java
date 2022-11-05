@@ -1,4 +1,4 @@
-package me.synology.hajubal.springsecurity.security.configs;
+package me.synology.hajubal.springsecurity.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
-@EnableWebSecurity
 @Slf4j
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
