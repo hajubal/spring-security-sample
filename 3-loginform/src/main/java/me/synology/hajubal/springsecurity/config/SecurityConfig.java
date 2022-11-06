@@ -1,4 +1,4 @@
-package me.synology.hajubal.springsecurity.security.configs;
+package me.synology.hajubal.springsecurity.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 // Spring Security should completely ignore URLs starting with /resources/
-                .antMatchers("/resources/**");
+                .antMatchers("/resources/**", "/webjars/**");
     }
 
     @Bean
@@ -40,6 +40,9 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
                 })
                 .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login_proc")
+                    .permitAll()
                 .and()
                 .build();
     }
