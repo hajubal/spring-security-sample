@@ -7,27 +7,22 @@
 <head th:replace="layout/header::head"></head>
 
 <body>
-<div class="container text-center">
-    <div class="login-form d-flex justify-content-center">
-        <div class="col-sm-5" style="margin-top: 30px;">
-            <div class="panel">
-                <p>아이디와 비밀번호를 입력해주세요</p>
+    <div class="container">
+        <form class="form-signin" method="post" th:action="@{/login_proc}">
+            <input type="hidden" th:value="secret" name="secret_key" />
+            <h2 class="form-signin-heading">Please sign in</h2>
+            <div th:if="${param.error}" th:text="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').getMessage()}" class="alert alert-danger" role="alert">
             </div>
-            <div th:if="${param.error}" class="form-group">
-                <span th:text="${exception}" class="alert alert-danger">잘못된 아이디나 암호입니다</span>
-            </div>
-            <form th:action="@{/login_proc}" class="form-signin" method="post">
-                <input type="hidden" th:value="secret" name="secret_key" />
-                <div class="form-group">
-                    <input type="text" class="form-control" name="username" value="admin" placeholder="아이디" required="required" autofocus="autofocus">
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" name="password" value="pass" placeholder="비밀번호" required="required">
-                </div>
-                <button type="submit" class="btn btn-lg btn-primary btn-block">로그인</button>
-            </form>
-        </div>
+            <p>
+                <label for="username" class="sr-only">Username</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+            </p>
+            <p>
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+            </p>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
     </div>
-</div>
 </body>
 </html>
