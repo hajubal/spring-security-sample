@@ -2,6 +2,10 @@ package me.synology.hajubal.springsecurity.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.synology.hajubal.springsecurity.common.CustomWebAuthenticationDetails;
+import me.synology.hajubal.springsecurity.common.CustomWebAuthenticationDetailsSource;
+import me.synology.hajubal.springsecurity.provider.CustomAuthenticationProvider;
+import me.synology.hajubal.springsecurity.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +24,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final CustomWebAuthenticationDetailsSource customWebAuthenticationDetailsSource;
+
+    private final UserService userService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -42,8 +50,10 @@ public class SecurityConfig {
                 .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/login_proc")
+                    .authenticationDetailsSource(customWebAuthenticationDetailsSource)
                     .permitAll()
                 .and()
+                //.authenticationProvider(new CustomAuthenticationProvider(bCryptPasswordEncoder, userService))
                 .build();
     }
 

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.synology.hajubal.springsecurity.entity.UserEntity;
 import me.synology.hajubal.springsecurity.repository.UserRepository;
+import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,9 +23,14 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUsername(username);
+        log.debug("loadUserByUsername search username: {}", username);
+
+        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(this.messages
+                .getMessage("DigestAuthenticationFilter.usernameNotFound", new String[]{username},"Bad credentials")));
 
         UserDetails userDetails = User.builder()
                 .username(userEntity.getUsername())
