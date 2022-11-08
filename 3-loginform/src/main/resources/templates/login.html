@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <form class="form-signin" method="post" th:action="@{/login_proc}">
-            <input type="hidden" th:value="secret" name="secret_key" />
+            <input type="hidden" th:value="secret" name="secretKey" />
             <h2 class="form-signin-heading">Please sign in</h2>
             <div th:if="${param.error}" th:text="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').getMessage()}" class="alert alert-danger" role="alert">
             </div>
