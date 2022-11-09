@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-                .csrf().disable()
+                //.csrf().disable()
                     .headers().frameOptions().sameOrigin()
                 .and()
                 .authorizeRequests(auth -> {
