@@ -1,10 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
-<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<!--<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>-->
+<!--<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>-->
 
 <head th:replace="layout/header::head"></head>
+
+<script>
+    function ajaxLogin(e) {
+        var username = $("input[name='username']").val().trim();
+        var password = $("input[name='password']").val().trim();
+        var data = {"username" : username, "password" : password};
+
+        // var csrfHeader = $('meta[name="_csrf_header"]').attr('content')
+        // var csrfToken = $('meta[name="_csrf"]').attr('content')
+
+        $.ajax({
+            type: "post",
+            url: "/ajaxLogin",
+            data: JSON.stringify(data),
+            dataType: "json",
+            beforeSend : function(xhr){
+                // xhr.setRequestHeader(csrfHeader, csrfToken);
+                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                xhr.setRequestHeader("Content-type","application/json");
+            },
+            success: function (data) {
+                console.log(data);
+                window.location = '/';
+
+            },
+            error : function(xhr, status, error) {
+                console.log(error);
+                window.location = '/login?error=true&exception=' + xhr.responseText;
+            }
+        });
+    }
+</script>
 
 <body>
     <div class="container">
@@ -15,13 +47,13 @@
             </div>
             <p>
                 <label for="username" class="sr-only">Username</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Username" value="user" required autofocus>
             </p>
             <p>
                 <label for="password" class="sr-only">Password</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required value="user">
             </p>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <button type="button" onclick="ajaxLogin()" class="btn btn-lg btn-primary btn-block">로그인</button>
         </form>
     </div>
 </body>
