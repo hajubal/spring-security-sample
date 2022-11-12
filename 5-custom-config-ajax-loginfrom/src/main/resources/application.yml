@@ -1,0 +1,12 @@
+spring:
+  security:
+    user:
+      name: user
+      password: user
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+        web: DEBUG
+    me.synology.hajubal.springsecurity: debug
