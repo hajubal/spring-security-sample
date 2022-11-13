@@ -39,33 +39,18 @@ public class SecurityConfig {
                 .antMatchers("/resources/**", "/webjars/**", "/js/**");
     }
 
-    @Autowired
-    private InMemoryUserDetailsManager inMemoryUserDetailsManager;
-
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        AuthenticationManager manager = builder
-                .userDetailsService(inMemoryUserDetailsManager)
-                .and()
-                .build();
-
-        AjaxLoginProcessingFilter authFilter = new AjaxLoginProcessingFilter();
-        authFilter.setAuthenticationManager(manager);
-        authFilter.setAuthenticationSuccessHandler(ajaxAuthenticationSuccessHandler());
-
         return http
                 .csrf().disable()
-                .authenticationManager(manager)
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests(auth -> {
-                    auth
-                            .anyRequest().authenticated();
-                })
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                .apply(new CustomConfig<>())
+                    .successHandler(ajaxAuthenticationSuccessHandler())
+                .and()
+                    .formLogin().loginPage("/login")
+                .and()
+                    .authorizeRequests()
+                        .antMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
                 .and()
                 .build();
     }
@@ -75,10 +60,13 @@ public class SecurityConfig {
         return new AjaxAuthenticationSuccessHandler();
     }
 
+    @Slf4j
     static class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response
                 , Authentication authentication) throws IOException, ServletException {
+            log.info("Call AjaxAuthenticationSuccessHandler.");
+
             ObjectMapper mapper = new ObjectMapper();
 
             Object account = authentication.getPrincipal();
