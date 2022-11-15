@@ -47,9 +47,9 @@ public class SecurityConfig {
                     .successHandler(ajaxAuthenticationSuccessHandler())
                 .and()
                     .formLogin().loginPage("/login")
+                    .permitAll()
                 .and()
                     .authorizeRequests()
-                        .antMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 .and()
                 .build();
