@@ -10,4 +10,19 @@ public class MainController {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/user")
+    public String user() {
+        return "user";
+    }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
+    @GetMapping("/manager")
+    public String manager() {
+        return "manager";
+    }
 }
