@@ -30,6 +30,7 @@ public class SecurityConfig {
                     auth
                         .antMatchers("/user").hasRole("USER")
                         .antMatchers("/admin").hasRole("ADMIN")
+                            .antMatchers("/admin").hasAuthority("update")
                         .antMatchers("/manager").hasAnyRole("ADMIN", "MANAGER")
                     ;
                 })
@@ -52,6 +53,14 @@ public class SecurityConfig {
                 .username("admin")
                 .password(bCryptPasswordEncoder().encode("admin"))
                 .roles("ADMIN")
+                .authorities("update")
+                .build());
+
+        userDetailsManager.createUser(User.builder()
+                .username("admin2")
+                .password(bCryptPasswordEncoder().encode("admin"))
+                .roles("ADMIN")
+                .authorities("read")
                 .build());
 
         userDetailsManager.createUser(User.builder()

@@ -1,4 +1,5 @@
 rootProject.name = 'spring-security-sample'
+include '0-corespringsecurity'
 include '0-main-sample'
 include '1-basic'
 include '2-userservice'
