@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -76,8 +77,21 @@ public class SecurityConfig {
     @Bean
     public AccessDecisionVoter<? extends Object> roleVoter() {
         RoleHierarchyVoter roleHierarchyVoter = new RoleHierarchyVoter(roleHierarchy());
+        roleHierarchyVoter.setRolePrefix("");
         return roleHierarchyVoter;
     }
+
+    /**
+     * voter를 사용하는 방식이 아닌 default로 설정할 수 있는 로직으로 추정됨
+     * TODO: 어떤 로직을 수행하는지 확인 필요. 참고 URL: https://www.baeldung.com/role-and-privilege-for-spring-security-registration
+     * @return
+     */
+//    @Bean
+//    public DefaultWebSecurityExpressionHandler webSecurityExpressionHandler() {
+//        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
+//        expressionHandler.setRoleHierarchy(roleHierarchy());
+//        return expressionHandler;
+//    }
 
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
@@ -99,6 +113,7 @@ public class SecurityConfig {
 
         LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<>();
         requestMap.put(requestMatcher, attrList);
+        requestMap.put(new AntPathRequestMatcher("/admin2"), org.springframework.security.access.SecurityConfig.createList("admin1"));
 
         return new DefaultFilterInvocationSecurityMetadataSource(requestMap);
     }
@@ -115,6 +130,12 @@ public class SecurityConfig {
 
         userDetailsManager.createUser(User.builder()
                 .username("admin")
+                .password(bCryptPasswordEncoder().encode("admin"))
+                .roles("ADMIN").authorities("admin1", "admin2", "admin3")
+                .build());
+
+        userDetailsManager.createUser(User.builder()
+                .username("admin2")
                 .password(bCryptPasswordEncoder().encode("admin"))
                 .roles("ADMIN")
                 .build());
