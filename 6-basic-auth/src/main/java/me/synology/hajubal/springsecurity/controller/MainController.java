@@ -16,6 +16,11 @@ public class MainController {
         return "user";
     }
 
+    @GetMapping("/updateUser")
+    public String updateUser() {
+        return "updateUser";
+    }
+
     @GetMapping("/admin")
     public String admin() {
         return "admin";

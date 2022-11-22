@@ -26,10 +26,7 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @EnableWebSecurity
@@ -78,7 +75,7 @@ public class SecurityConfig {
     @Bean
     public AccessDecisionVoter<? extends Object> roleVoter() {
         RoleHierarchyVoter roleHierarchyVoter = new RoleHierarchyVoter(roleHierarchy());
-        roleHierarchyVoter.setRolePrefix("");
+        //roleHierarchyVoter.setRolePrefix("");
         return roleHierarchyVoter;
     }
 
@@ -87,6 +84,10 @@ public class SecurityConfig {
      * WebSecurityConfiguration 클래스에 이미 동일한 이름의 bean이 생성코드가 있음. 아래 @Bean으로 등록하는 방식은 spring security 5.7 이전에 사용하던 방신.
      * 5.7 이후 버전에서는 HttpConfigBuilder에서 expressionHander를 등록하면 되는 것으로 추정됨. 테스트 해봐야 할듯.
      * TODO: 어떤 로직을 수행하는지 확인 필요. 참고 URL: https://www.baeldung.com/role-and-privilege-for-spring-security-registration
+     *
+     * DefaultWebSecurityExpressionHandler 클래스가 spring security에서 default로 권한체 크하는 클래스임.
+     * 참고 글: https://ncucu.me/109
+     *
      * @return
      */
 //    @Bean
@@ -99,24 +100,36 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_MANAGER\nROLE_MANAGER > ROLE_USER");
+        roleHierarchy.setHierarchy("""
+                ROLE_ADMIN > ROLE_MANAGER
+                ROLE_ADMIN > ROLE_DELETE_USER
+                ROLE_ADMIN > ROLE_ADD_MANAGER
+                ROLE_ADMIN > ROLE_DELETE_MANAGER
+                ROLE_MANAGER > ROLE_USER
+                ROLE_MANAGER > ROLE_UPDATE_USER
+                ROLE_MANAGER > ROLE_ADD_USER
+                ROLE_USER > ROLE_READ""");
         return roleHierarchy;
     }
 
+    /**
+     * url 접근 제어 설정
+     *
+     * @return
+     */
     @Bean
     public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        RequestMatcher adminMatcher = new AntPathRequestMatcher("/admin");
-
-        List<ConfigAttribute> attrList = new ArrayList<>();
         /**
          * ConfigAttribute 직접 설정할 경우, RoleHierarchyVoter 에서 default는 역할은 ROLE_로 시작한다.
          * user builder를 통해 user의 역할을 추가할 경우 자동으로 ROLE_이 붙기 때문이다.
          */
-        attrList.add(new Jsr250SecurityConfig("ROLE_ADMIN"));
-
         LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<>();
-        requestMap.put(adminMatcher, attrList);
-        requestMap.put(new AntPathRequestMatcher("/admin2"), org.springframework.security.access.SecurityConfig.createList("admin1"));
+
+        requestMap.put(new AntPathRequestMatcher("/admin"), org.springframework.security.access.SecurityConfig.createList("ROLE_ADMIN"));
+        requestMap.put(new AntPathRequestMatcher("/manager"), org.springframework.security.access.SecurityConfig.createList("ROLE_MANAGER"));
+
+        //TODO ROLE_MANAGER 권한으로 /updateUser 접근 시 FilterSecurityInterceptor 클래스에서 invoke 호출 시 "Did not switch RunAs authentication since RunAsManager returned null" 메시지 발생 확인 필요
+        requestMap.put(new AntPathRequestMatcher("/updateUser"), org.springframework.security.access.SecurityConfig.createList("ROLE_UPDATE_USER", "ROLE_ADMIN"));
 
         return new DefaultFilterInvocationSecurityMetadataSource(requestMap);
     }
@@ -134,7 +147,7 @@ public class SecurityConfig {
         userDetailsManager.createUser(User.builder()
                 .username("admin")
                 .password(bCryptPasswordEncoder().encode("admin"))
-                .roles("ADMIN").authorities("admin1", "admin2", "admin3")
+                .roles("ADMIN")
                 .build());
 
         userDetailsManager.createUser(User.builder()
