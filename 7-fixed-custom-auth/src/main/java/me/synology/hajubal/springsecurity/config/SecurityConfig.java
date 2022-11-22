@@ -49,12 +49,13 @@ public class SecurityConfig {
 
         return http
                 .authorizeRequests()
+//                    .expressionHandler(webSecurityExpressionHandler())
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
                 .and()
-                .authenticationManager(manager)
-                .addFilterAt(customFilterSecurityInterceptor(manager), FilterSecurityInterceptor.class)
+                    .authenticationManager(manager)
+                    .addFilterAt(customFilterSecurityInterceptor(manager), FilterSecurityInterceptor.class)
                 .build();
     }
 
@@ -82,7 +83,9 @@ public class SecurityConfig {
     }
 
     /**
-     * voter를 사용하는 방식이 아닌 default로 설정할 수 있는 로직으로 추정됨
+     * voter를 사용하는 방식이 아닌 default로 설정할 수 있는 로직으로 추정됨.
+     * WebSecurityConfiguration 클래스에 이미 동일한 이름의 bean이 생성코드가 있음. 아래 @Bean으로 등록하는 방식은 spring security 5.7 이전에 사용하던 방신.
+     * 5.7 이후 버전에서는 HttpConfigBuilder에서 expressionHander를 등록하면 되는 것으로 추정됨. 테스트 해봐야 할듯.
      * TODO: 어떤 로직을 수행하는지 확인 필요. 참고 URL: https://www.baeldung.com/role-and-privilege-for-spring-security-registration
      * @return
      */
@@ -102,7 +105,7 @@ public class SecurityConfig {
 
     @Bean
     public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        RequestMatcher requestMatcher = new AntPathRequestMatcher("/admin");
+        RequestMatcher adminMatcher = new AntPathRequestMatcher("/admin");
 
         List<ConfigAttribute> attrList = new ArrayList<>();
         /**
@@ -112,7 +115,7 @@ public class SecurityConfig {
         attrList.add(new Jsr250SecurityConfig("ROLE_ADMIN"));
 
         LinkedHashMap<RequestMatcher, Collection<ConfigAttribute>> requestMap = new LinkedHashMap<>();
-        requestMap.put(requestMatcher, attrList);
+        requestMap.put(adminMatcher, attrList);
         requestMap.put(new AntPathRequestMatcher("/admin2"), org.springframework.security.access.SecurityConfig.createList("admin1"));
 
         return new DefaultFilterInvocationSecurityMetadataSource(requestMap);
