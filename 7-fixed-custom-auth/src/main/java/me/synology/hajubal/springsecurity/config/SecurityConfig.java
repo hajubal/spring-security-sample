@@ -162,6 +162,18 @@ public class SecurityConfig {
                 .roles("MANAGER")
                 .build());
 
+        /**
+         * 사용자 생성 시점에  authorities 추가하게 되면 role은 무시되게 됨.
+         * role에 해당하는 authorities 조회해서 세팅하기 때문에
+         *
+         */
+        userDetailsManager.createUser(User.builder()
+                .username("manager2")
+                .password(bCryptPasswordEncoder().encode("manager"))
+                .roles("MANAGER")
+                        .authorities("attr1", "attr2")
+                .build());
+
         return userDetailsManager;
     }
 
